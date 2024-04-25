@@ -16,6 +16,9 @@ public class PlayerControllerX : MonoBehaviour
     private AudioSource playerAudio;
     public AudioClip moneySound;
     public AudioClip explodeSound;
+    public AudioClip bounceSound;
+    
+    public float ceiling = 14.36f;
 
 
     // Start is called before the first frame update
@@ -38,6 +41,12 @@ public class PlayerControllerX : MonoBehaviour
         {
             playerRb.AddForce(Vector3.up * floatForce * Time.deltaTime, ForceMode.Impulse);
         }
+
+        if(transform.position.y > ceiling)
+        {
+            transform.position = new Vector3(transform.position.x, ceiling, transform.position.z);
+            playerRb.velocity = Vector3.zero;
+        }
     }
 
     private void OnCollisionEnter(Collision other)
@@ -59,6 +68,11 @@ public class PlayerControllerX : MonoBehaviour
             playerAudio.PlayOneShot(moneySound, 1.0f);
             Destroy(other.gameObject);
 
+        }
+        else if (other.gameObject.CompareTag("Ground"))
+        {
+            playerAudio.PlayOneShot(bounceSound, 1.0f);
+            playerRb.AddForce(Vector3.up * 5, ForceMode.Impulse);
         }
 
     }
